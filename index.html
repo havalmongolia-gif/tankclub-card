@@ -40,26 +40,17 @@
 </div>
 
 <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    const verifyLink = "https://havalmongolia-gif.github.io/tankclub-card/verify.html?id=" + user.id + 
+                   "&name=" + encodeURIComponent((user.first_name || "") + " " + (user.last_name || ""));
 
-    const user = tg.initDataUnsafe?.user;
-
-    if (user && user.id) {
-        // Хэрэглэгчийг таньсан үед
-        document.getElementById('user-name').innerText = (user.first_name || "") + " " + (user.last_name || "");
-        document.getElementById('user-id').innerText = user.id;
-
-        new QRCode(document.getElementById("qrcode"), {
-            text: "TANK-USER-" + user.id,
-            width: 140,
-            height: 140
-        });
-    } else {
-        // Танихгүй үед бот руу чиглүүлнэ
-        document.getElementById('user-info').style.display = 'none';
-        document.getElementById('error-content').style.display = 'block';
-    }
+new QRCode(document.getElementById("qrcode"), {
+    text: verifyLink,
+    width: 140,
+    height: 140,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+});
 </script>
 
 </body>
