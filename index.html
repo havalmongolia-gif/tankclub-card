@@ -7,50 +7,58 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        /* Өмнөх стиль хэвээрээ байна */
         body { background-color: #0f0f0f; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; color: white; }
-        .card { width: 320px; background: linear-gradient(145deg, #1a1a1a, #000000); border-radius: 20px; border: 1px solid #333; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); text-align: left; }
+        .card { width: 320px; background: linear-gradient(145deg, #1a1a1a, #000000); border-radius: 20px; border: 1px solid #333; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.8); text-align: left; position: relative; overflow: hidden; }
         .logo { font-size: 22px; font-weight: 900; color: #d4af37; border-bottom: 2px solid #d4af37; display: inline-block; margin-bottom: 25px; }
         .info-label { color: #777; font-size: 11px; text-transform: uppercase; margin-top: 12px; }
         .info-value { font-size: 17px; font-weight: 500; }
         .qr-container { background: white; padding: 10px; border-radius: 12px; width: 140px; height: 140px; margin: 30px auto 10px; display: flex; justify-content: center; align-items: center; }
+        .error-btn { display: block; width: 100%; background: #d4af37; color: black; text-align: center; padding: 10px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="card">
+<div class="card" id="card-content">
     <div class="logo">TANK CLUB</div>
     
-    <div class="info-label">Гишүүний нэр</div>
-    <div id="user-name" class="info-value">Уншиж байна...</div>
+    <div id="user-info">
+        <div class="info-label">Гишүүний нэр</div>
+        <div id="user-name" class="info-value">Уншиж байна...</div>
 
-    <div class="info-label">Telegram ID</div>
-    <div id="user-id" class="info-value">-------</div>
+        <div class="info-label">Telegram ID</div>
+        <div id="user-id" class="info-value">-------</div>
 
-    <div class="qr-container" id="qrcode"></div>
+        <div class="qr-container" id="qrcode"></div>
+    </div>
+
+    <div id="error-content" style="display:none; text-align: center;">
+        <p style="font-size: 14px;">Уучлаарай, таныг таньсангүй.<br>Эхлээд бот руу орж "START" дарна уу.</p>
+        <a href="https://t.me/TankClub_bot" class="error-btn">БОТ РУУ ОРОХ</a>
+    </div>
+
     <div style="text-align:center; font-size: 10px; color: #444; margin-top: 10px;">OFFICIAL VIRTUAL CARD</div>
 </div>
 
 <script>
-    // Telegram-аас мэдээлэл авах
     const tg = window.Telegram.WebApp;
-    tg.expand(); // Апп-ыг бүтэн дэлгэцээр нээх
+    tg.expand();
 
     const user = tg.initDataUnsafe?.user;
 
-    if (user) {
-        // Хэрэглэгчийн нэр болон ID-г солих
+    if (user && user.id) {
+        // Хэрэглэгчийг таньсан үед
         document.getElementById('user-name').innerText = (user.first_name || "") + " " + (user.last_name || "");
         document.getElementById('user-id').innerText = user.id;
 
-        // QR кодыг тухайн хүний ID-гаар үүсгэх
         new QRCode(document.getElementById("qrcode"), {
             text: "TANK-USER-" + user.id,
             width: 140,
             height: 140
         });
     } else {
-        document.getElementById('user-name').innerText = "Танихгүй хэрэглэгч";
+        // Танихгүй үед бот руу чиглүүлнэ
+        document.getElementById('user-info').style.display = 'none';
+        document.getElementById('error-content').style.display = 'block';
     }
 </script>
 
